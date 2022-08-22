@@ -12,13 +12,13 @@ const initialFormState = {
   passwordRepeat: "",
 };
 
-type IFormState = typeof initialFormState;
-
 const loginState = {
   username: "",
   password: "",
+  remember: false,
 };
 
+type IFormState = typeof initialFormState;
 interface FieldProps {
   action: (event: React.ChangeEvent<HTMLInputElement>) => any;
   value: Partial<IFormState>;
@@ -214,6 +214,10 @@ const SignForm = (): JSX.Element => {
             value={loginData}
             label={"Password"}
           />
+
+          <Form.Group className="mb-3" controlId="formBasicCheckbox">
+            <Form.Check type="checkbox" label="Remember me" />
+          </Form.Group>
 
           <Button
             variant="primary"
