@@ -218,7 +218,7 @@ const SignForm = (): JSX.Element => {
           <Button
             variant="primary"
             type="button"
-            onClick={() => {
+            onClick={(e) => {
               setStage(1);
             }}
           >

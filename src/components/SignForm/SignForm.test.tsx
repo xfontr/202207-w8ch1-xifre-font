@@ -89,7 +89,7 @@ describe("Given a SignForm component", () => {
   });
 
   describe("When the user types any value on the stage 2 fields", () => {
-    test("Then every field will tdisplay the inputed value", () => {
+    test("Then every field will display the inputed value", () => {
       const input = "hello";
       render(<SignForm />);
       const nextButton = screen.getByRole("button", { name: "Next" });
@@ -108,6 +108,39 @@ describe("Given a SignForm component", () => {
       expect(username).toHaveValue(input);
       expect(password).toHaveValue(input);
       expect(repeatPassword).toHaveValue(input);
+    });
+  });
+
+  describe("When the user goes to the stage 3", () => {
+    test("Then the stage 2 inputs should dissappear, except for the password and username", async () => {
+      render(<SignForm />);
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      await userEvent.click(nextButton);
+
+      const secondNextButton = screen.getByRole("button", { name: "Next" });
+      await userEvent.click(secondNextButton);
+
+      const oldForm = [];
+      oldForm.push(screen.queryByLabelText("Repeat your password"));
+
+      oldForm.forEach((field) => expect(field).not.toBeInTheDocument());
+    });
+
+    test("Then the stage 3 inputs should appear", async () => {
+      render(<SignForm />);
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      await userEvent.click(nextButton);
+
+      const secondNextButton = screen.getByRole("button", { name: "Next" });
+      await userEvent.click(secondNextButton);
+
+      const form = [];
+      form.push(screen.getByLabelText("Username"));
+      form.push(screen.getByLabelText("Password"));
+      form.push(screen.getByRole("button", { name: "Back" }));
+      form.push(screen.getByRole("button", { name: "Submit" }));
+
+      form.forEach((field) => expect(field).toBeInTheDocument());
     });
   });
 });
