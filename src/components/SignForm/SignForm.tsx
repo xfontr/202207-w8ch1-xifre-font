@@ -14,7 +14,7 @@ const initialFormState = {
 
 interface PasswordProps {
   action: (event: React.ChangeEvent<HTMLInputElement>) => any;
-  value: string;
+  value: typeof initialFormState;
   label: string;
 }
 
@@ -28,10 +28,19 @@ const PasswordInput = ({
     <Form.Control
       type="password"
       name={label === "Password" ? "password" : "passwordRepeat"}
-      value={value}
+      value={label === "Password" ? value.password : value.passwordRepeat}
       onChange={(event) => {
         action(event as React.ChangeEvent<HTMLInputElement>);
+        if (
+          label !== "Password" &&
+          value.password !== event.currentTarget.value
+        ) {
+          event.currentTarget.style.backgroundColor = "rgb(212, 76, 76)";
+        } else {
+          event.currentTarget.style.backgroundColor = "white";
+        }
       }}
+      required={true}
     />
   </Form.Group>
 );
@@ -53,7 +62,12 @@ const SignForm = (): JSX.Element => {
   switch (stage) {
     case 0:
       return (
-        <Form>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setStage(1);
+          }}
+        >
           <Form.Group className="mb-3" controlId="formBasicText">
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -64,6 +78,7 @@ const SignForm = (): JSX.Element => {
               onChange={(event) => {
                 handleChange(event as React.ChangeEvent<HTMLInputElement>);
               }}
+              required={true}
             />
           </Form.Group>
 
@@ -77,6 +92,7 @@ const SignForm = (): JSX.Element => {
               onChange={(event) => {
                 handleChange(event as React.ChangeEvent<HTMLInputElement>);
               }}
+              required={true}
             />
           </Form.Group>
 
@@ -90,6 +106,7 @@ const SignForm = (): JSX.Element => {
               onChange={(event) => {
                 handleChange(event as React.ChangeEvent<HTMLInputElement>);
               }}
+              required={true}
             />
             <Form.Text className="text-muted">
               {`You are ${getAge()} years old`}
@@ -106,23 +123,25 @@ const SignForm = (): JSX.Element => {
               onChange={(event) => {
                 handleChange(event as React.ChangeEvent<HTMLInputElement>);
               }}
+              required={true}
             />
           </Form.Group>
 
-          <Button
-            variant="primary"
-            type="button"
-            onClick={() => {
-              setStage(1);
-            }}
-          >
+          <Button variant="primary" type="submit">
             Next
           </Button>
         </Form>
       );
     case 1:
       return (
-        <Form>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (userData.password === userData.passwordRepeat) {
+              setStage(2);
+            }
+          }}
+        >
           <Form.Group className="mb-3" controlId="formBasicText">
             <Form.Label>Username</Form.Label>
             <Form.Control
@@ -138,13 +157,13 @@ const SignForm = (): JSX.Element => {
 
           <PasswordInput
             action={handleChange}
-            value={userData.password}
+            value={userData}
             label={"Password"}
           />
 
           <PasswordInput
             action={handleChange}
-            value={userData.passwordRepeat}
+            value={userData}
             label={"Repeat your password"}
           />
 
@@ -157,17 +176,13 @@ const SignForm = (): JSX.Element => {
           >
             Back
           </Button>
-          <Button
-            variant="primary"
-            type="button"
-            onClick={() => {
-              setStage(2);
-            }}
-          >
+          <Button variant="primary" type="submit">
             Next
           </Button>
         </Form>
       );
+    case 2:
+      return <></>;
     default:
       return <>Hello</>;
   }
