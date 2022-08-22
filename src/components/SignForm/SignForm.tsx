@@ -15,7 +15,7 @@ const SignForm = (): JSX.Element => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({
       ...userData,
-      [event.currentTarget.id]: event.currentTarget.value,
+      [event.currentTarget.name]: event.currentTarget.value,
     });
   };
 
@@ -26,7 +26,7 @@ const SignForm = (): JSX.Element => {
         <Form.Control
           type="text"
           placeholder="John"
-          id="name"
+          name="name"
           value={userData.name}
           onChange={(event) => {
             handleChange(event as React.ChangeEvent<HTMLInputElement>);
@@ -39,7 +39,7 @@ const SignForm = (): JSX.Element => {
         <Form.Control
           type="text"
           placeholder="Doe"
-          id="lastName"
+          name="lastName"
           value={userData.lastName}
           onChange={(event) => {
             handleChange(event as React.ChangeEvent<HTMLInputElement>);
@@ -52,7 +52,7 @@ const SignForm = (): JSX.Element => {
         <Form.Control
           type="date"
           placeholder="Date of Birth"
-          id="date"
+          name="date"
           value={userData.date}
           onChange={(event) => {
             handleChange(event as React.ChangeEvent<HTMLInputElement>);
@@ -68,7 +68,7 @@ const SignForm = (): JSX.Element => {
         <Form.Control
           type="email"
           placeholder="Enter email"
-          id="email"
+          name="email"
           value={userData.email}
           onChange={(event) => {
             handleChange(event as React.ChangeEvent<HTMLInputElement>);
