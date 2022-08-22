@@ -48,13 +48,66 @@ describe("Given a SignForm component", () => {
       render(<SignForm />);
 
       const birthday = screen.getByLabelText("Birthdate") as HTMLInputElement;
-      // const asdf = screen.getByRole("asdfasdfasdfasdfasfdasdfasd");
 
       fireEvent.change(birthday, { target: { value: input } });
       const age = screen.getByText(`You are ${expectedAge} years old`);
 
       expect(birthday).toHaveValue(input);
       expect(age).toBeInTheDocument();
+    });
+  });
+
+  describe("When the user goes to the stage 2", () => {
+    test("Then the stage 1 inputs should dissappear", async () => {
+      render(<SignForm />);
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      await userEvent.click(nextButton);
+
+      const oldForm = [];
+      oldForm.push(screen.queryByLabelText("Name"));
+      oldForm.push(screen.queryByLabelText("Last name"));
+      oldForm.push(screen.queryByLabelText("Birthdate"));
+      oldForm.push(screen.queryByLabelText("Email address"));
+
+      oldForm.forEach((field) => expect(field).not.toBeInTheDocument());
+    });
+
+    test("Then the stage 2 inputs should appear", () => {
+      render(<SignForm />);
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      userEvent.click(nextButton);
+
+      const form = [];
+      form.push(screen.getByLabelText("Username"));
+      form.push(screen.getByLabelText("Password"));
+      form.push(screen.getByLabelText("Repeat your password"));
+      form.push(screen.getByRole("button", { name: "Back" }));
+      form.push(screen.getByRole("button", { name: "Next" }));
+
+      form.forEach((field) => expect(field).toBeInTheDocument());
+    });
+  });
+
+  describe("When the user types any value on the stage 2 fields", () => {
+    test("Then every field will tdisplay the inputed value", () => {
+      const input = "hello";
+      render(<SignForm />);
+      const nextButton = screen.getByRole("button", { name: "Next" });
+      userEvent.click(nextButton);
+
+      const username = screen.getByLabelText("Username") as HTMLInputElement;
+      const password = screen.getByLabelText("Password") as HTMLInputElement;
+      const repeatPassword = screen.getByLabelText(
+        "Repeat your password"
+      ) as HTMLInputElement;
+
+      fireEvent.change(username, { target: { value: input } });
+      fireEvent.change(password, { target: { value: input } });
+      fireEvent.change(repeatPassword, { target: { value: input } });
+
+      expect(username).toHaveValue(input);
+      expect(password).toHaveValue(input);
+      expect(repeatPassword).toHaveValue(input);
     });
   });
 });
