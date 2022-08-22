@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import ListGroup from "react-bootstrap/ListGroup";
+import Alert from "react-bootstrap/Alert";
 
 const initialFormState = {
   name: "",
@@ -238,6 +239,10 @@ const SignForm = (): JSX.Element => {
               checked={loginData.remember}
             />
           </Form.Group>
+
+          {feedback.isVisible && (
+            <Alert variant={"danger"}>Incorrect username or password</Alert>
+          )}
 
           <Button
             variant="primary"
