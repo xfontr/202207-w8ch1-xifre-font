@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
 
 const initialFormState = {
   name: "",
@@ -68,6 +69,10 @@ const SignForm = (): JSX.Element => {
   const [userData, setUserData] = useState(initialFormState);
   const [loginData, setLoginData] = useState(loginState);
   const [stage, setStage] = useState(0);
+  const [feedback, setFeedback] = useState({
+    type: "error",
+    isVisible: false,
+  });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({
@@ -200,6 +205,11 @@ const SignForm = (): JSX.Element => {
               userData.username
             ) {
               setStage(3);
+            } else {
+              setFeedback({
+                ...feedback,
+                isVisible: true,
+              });
             }
           }}
         >
@@ -216,7 +226,17 @@ const SignForm = (): JSX.Element => {
           />
 
           <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Remember me" />
+            <Form.Check
+              type="checkbox"
+              label="Remember me"
+              onChange={(e) =>
+                setLoginData({
+                  ...loginData,
+                  remember: e.currentTarget.checked,
+                })
+              }
+              checked={loginData.remember}
+            />
           </Form.Group>
 
           <Button
@@ -233,8 +253,21 @@ const SignForm = (): JSX.Element => {
           </Button>
         </Form>
       );
+
     default:
-      return <>Hello</>;
+      return (
+        <>
+          <ListGroup>
+            <ListGroup.Item>Name: {userData.name}</ListGroup.Item>
+            <ListGroup.Item>Username: {userData.username}</ListGroup.Item>
+            <ListGroup.Item>Birth: {userData.date}</ListGroup.Item>
+            <ListGroup.Item>Email: {userData.email}</ListGroup.Item>
+          </ListGroup>
+          <Button variant="primary" type="button" onClick={() => setStage(0)}>
+            Edit
+          </Button>
+        </>
+      );
   }
 };
 
