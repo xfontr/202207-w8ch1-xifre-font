@@ -12,17 +12,20 @@ const initialFormState = {
   passwordRepeat: "",
 };
 
-interface PasswordProps {
+type IFormState = typeof initialFormState;
+
+const loginState = {
+  username: "",
+  password: "",
+};
+
+interface FieldProps {
   action: (event: React.ChangeEvent<HTMLInputElement>) => any;
-  value: typeof initialFormState;
+  value: Partial<IFormState>;
   label: string;
 }
 
-const PasswordInput = ({
-  action,
-  value,
-  label,
-}: PasswordProps): JSX.Element => (
+const PasswordInput = ({ action, value, label }: FieldProps): JSX.Element => (
   <Form.Group className="mb-3" controlId="formBasicPassword">
     <Form.Label>{label}</Form.Label>
     <Form.Control
@@ -45,13 +48,37 @@ const PasswordInput = ({
   </Form.Group>
 );
 
+const NameInput = ({ action, value, label }: FieldProps): JSX.Element => (
+  <Form.Group className="mb-3" controlId="formBasicText">
+    <Form.Label>{label}</Form.Label>
+    <Form.Control
+      type="text"
+      placeholder="John"
+      name={label === "Name" ? "name" : "username"}
+      value={label === "Name" ? value.name : value.username}
+      onChange={(event) => {
+        action(event as React.ChangeEvent<HTMLInputElement>);
+      }}
+      required={true}
+    />
+  </Form.Group>
+);
+
 const SignForm = (): JSX.Element => {
   const [userData, setUserData] = useState(initialFormState);
+  const [loginData, setLoginData] = useState(loginState);
   const [stage, setStage] = useState(0);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({
       ...userData,
+      [event.currentTarget.name]: event.currentTarget.value,
+    });
+  };
+
+  const handleChangeLogin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginData({
+      ...loginData,
       [event.currentTarget.name]: event.currentTarget.value,
     });
   };
@@ -68,19 +95,7 @@ const SignForm = (): JSX.Element => {
             setStage(1);
           }}
         >
-          <Form.Group className="mb-3" controlId="formBasicText">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="John"
-              name="name"
-              value={userData.name}
-              onChange={(event) => {
-                handleChange(event as React.ChangeEvent<HTMLInputElement>);
-              }}
-              required={true}
-            />
-          </Form.Group>
+          <NameInput action={handleChange} label={"Name"} value={userData} />
 
           <Form.Group className="mb-3" controlId="formBasicText">
             <Form.Label>Last name</Form.Label>
@@ -142,18 +157,11 @@ const SignForm = (): JSX.Element => {
             }
           }}
         >
-          <Form.Group className="mb-3" controlId="formBasicText">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Jonny"
-              name="username"
-              value={userData.username}
-              onChange={(event) => {
-                handleChange(event as React.ChangeEvent<HTMLInputElement>);
-              }}
-            />
-          </Form.Group>
+          <NameInput
+            action={handleChange}
+            label={"Username"}
+            value={userData}
+          />
 
           <PasswordInput
             action={handleChange}
@@ -182,7 +190,45 @@ const SignForm = (): JSX.Element => {
         </Form>
       );
     case 2:
-      return <></>;
+      return (
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (
+              loginData.password === userData.password &&
+              loginData.username &&
+              userData.username
+            ) {
+              setStage(3);
+            }
+          }}
+        >
+          <NameInput
+            action={handleChangeLogin}
+            label={"Username"}
+            value={loginData}
+          />
+
+          <PasswordInput
+            action={handleChangeLogin}
+            value={loginData}
+            label={"Password"}
+          />
+
+          <Button
+            variant="primary"
+            type="button"
+            onClick={() => {
+              setStage(1);
+            }}
+          >
+            Back
+          </Button>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      );
     default:
       return <>Hello</>;
   }
