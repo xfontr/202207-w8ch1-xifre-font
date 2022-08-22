@@ -1,5 +1,11 @@
+import SignForm from "./components/SignForm/SignForm";
+
 const App = () => {
-  return <div></div>;
+  return (
+    <div>
+      <SignForm />
+    </div>
+  );
 };
 
 export default App;
