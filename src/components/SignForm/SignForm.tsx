@@ -15,7 +15,7 @@ const SignForm = (): JSX.Element => {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicDatePicker">
-        <Form.Label>Select Date</Form.Label>
+        <Form.Label>Birthdate</Form.Label>
         <Form.Control type="date" placeholder="Date of Birth" />
         <Form.Text className="text-muted">
           We'll never share your email with anyone else.
