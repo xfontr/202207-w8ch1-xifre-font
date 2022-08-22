@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
+import Alert from "react-bootstrap/Alert";
 
 const initialFormState = {
   name: "",
@@ -12,13 +14,13 @@ const initialFormState = {
   passwordRepeat: "",
 };
 
-type IFormState = typeof initialFormState;
-
 const loginState = {
   username: "",
   password: "",
+  remember: false,
 };
 
+type IFormState = typeof initialFormState;
 interface FieldProps {
   action: (event: React.ChangeEvent<HTMLInputElement>) => any;
   value: Partial<IFormState>;
@@ -68,6 +70,10 @@ const SignForm = (): JSX.Element => {
   const [userData, setUserData] = useState(initialFormState);
   const [loginData, setLoginData] = useState(loginState);
   const [stage, setStage] = useState(0);
+  const [feedback, setFeedback] = useState({
+    type: "error",
+    isVisible: false,
+  });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({
@@ -200,6 +206,11 @@ const SignForm = (): JSX.Element => {
               userData.username
             ) {
               setStage(3);
+            } else {
+              setFeedback({
+                ...feedback,
+                isVisible: true,
+              });
             }
           }}
         >
@@ -215,6 +226,24 @@ const SignForm = (): JSX.Element => {
             label={"Password"}
           />
 
+          <Form.Group className="mb-3" controlId="formBasicCheckbox">
+            <Form.Check
+              type="checkbox"
+              label="Remember me"
+              onChange={(e) =>
+                setLoginData({
+                  ...loginData,
+                  remember: e.currentTarget.checked,
+                })
+              }
+              checked={loginData.remember}
+            />
+          </Form.Group>
+
+          {feedback.isVisible && (
+            <Alert variant={"danger"}>Incorrect username or password</Alert>
+          )}
+
           <Button
             variant="primary"
             type="button"
@@ -229,8 +258,21 @@ const SignForm = (): JSX.Element => {
           </Button>
         </Form>
       );
+
     default:
-      return <>Hello</>;
+      return (
+        <>
+          <ListGroup>
+            <ListGroup.Item>Name: {userData.name}</ListGroup.Item>
+            <ListGroup.Item>Username: {userData.username}</ListGroup.Item>
+            <ListGroup.Item>Birth: {userData.date}</ListGroup.Item>
+            <ListGroup.Item>Email: {userData.email}</ListGroup.Item>
+          </ListGroup>
+          <Button variant="primary" type="button" onClick={() => setStage(0)}>
+            Edit
+          </Button>
+        </>
+      );
   }
 };
 
