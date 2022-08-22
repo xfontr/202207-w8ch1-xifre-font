@@ -39,4 +39,22 @@ describe("Given a SignForm component", () => {
       expect(birthday).toHaveValue("1111-11-11");
     });
   });
+
+  describe("When the user types his age", () => {
+    test("Then his age should be calculated and displayed", () => {
+      const input = "1997-08-04";
+      const expectedAge = new Date().getFullYear() - 1997;
+
+      render(<SignForm />);
+
+      const birthday = screen.getByLabelText("Birthdate") as HTMLInputElement;
+      // const asdf = screen.getByRole("asdfasdfasdfasdfasfdasdfasd");
+
+      fireEvent.change(birthday, { target: { value: input } });
+      const age = screen.getByText(`You are ${expectedAge} years old`);
+
+      expect(birthday).toHaveValue(input);
+      expect(age).toBeInTheDocument();
+    });
+  });
 });
