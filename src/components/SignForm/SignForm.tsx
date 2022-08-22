@@ -19,6 +19,9 @@ const SignForm = (): JSX.Element => {
     });
   };
 
+  const getAge = (): number =>
+    new Date().getFullYear() - +userData.date.slice(0, 4);
+
   return (
     <Form>
       <Form.Group className="mb-3" controlId="formBasicText">
@@ -59,7 +62,7 @@ const SignForm = (): JSX.Element => {
           }}
         />
         <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
+          {`You are ${getAge()} years old`}
         </Form.Text>
       </Form.Group>
 
